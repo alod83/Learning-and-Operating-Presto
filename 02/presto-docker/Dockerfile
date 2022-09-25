@@ -17,6 +17,7 @@ RUN tar -xf presto-server-${PRESTO_VERSION}.tar.gz -C /opt
 RUN rm presto-server-${PRESTO_VERSION}.tar.gz
 RUN ln -s /opt/presto-server-${PRESTO_VERSION} /opt/presto
 
+
 # Copy configuration files on the host into the image
 COPY etc /opt/presto/etc
 
@@ -24,6 +25,7 @@ ARG PRESTO_CLI_BIN=https://repo1.maven.org/maven2/com/facebook/presto/presto-cli
 RUN wget --quiet "${PRESTO_CLI_BIN}"
 RUN mv presto-cli-${PRESTO_VERSION}-executable.jar /usr/local/bin/presto
 RUN chmod +x /usr/local/bin/presto
+RUN mkdir /opt/presto/data
 
 # Specify the entrypoint to start
 CMD ["/opt/presto/bin/launcher", "run"]
