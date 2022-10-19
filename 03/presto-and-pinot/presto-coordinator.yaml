@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: presto-coordinator
+spec:
+  ports:
+    - name: client
+      port: 8080
+  selector:
+    app: presto-coordinator
+
+
+
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: presto-coordinator
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: presto-coordinator
+    spec:
+      containers:
+        - name: presto-coordinator
+          image:  prestodb:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+            - containerPort: 8889
+          resources:
+            requests:
+              memory: "4Gi"
+            limits:
+              memory: "4Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/opt/presto/etc/config.properties"
+              subPath: config.properties
+              
+            - name: pinot
+              mountPath: "/opt/presto/etc/catalog/pinot.properties"
+              subPath: pinot.properties
+          
+      volumes:
+        # You set volumes at the Pod level, then mount them into containers inside that Pod
+        - name: config
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: presto-config
+            # An array of keys from the ConfigMap to create as files
+            items:
+            - key: "config-coordinator.properties"
+              path: "config.properties"
+        - name: pinot
+          configMap:
+            name: presto-config
+            items:
+            - key: "pinot.properties"
+              path: "pinot.properties"
+            

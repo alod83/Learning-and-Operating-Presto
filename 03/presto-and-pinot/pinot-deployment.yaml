@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pinot
+spec:
+  ports:
+    - name: "9000"
+      port: 9000
+  selector:
+    app: pinot
+
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: pinot
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pinot
+    spec:
+      containers:
+        - name: pinot
+          image: apachepinot/pinot:latest-arm64
+          command: ["/opt/pinot/bin/pinot-admin.sh"]
+          args: ["QuickStart", "-type", "batch"]
+          ports:
+            - containerPort: 9000
+          resources:
+            requests:
+              memory: "2Gi"
+            limits:
+              memory: "2Gi"
+          

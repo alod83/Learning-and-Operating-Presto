@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: presto-config
+data:
+  
+  config.properties: |
+    coordinator=false
+    http-server.http.port=8080
+    memory.heap-headroom-per-node=0.5GB
+    query.max-memory=1GB
+    query.max-memory-per-node=0.5GB
+    query.max-total-memory-per-node=2GB
+    discovery.uri=http://presto-coordinator:8080
+  config-coordinator.properties: |
+    coordinator=true
+    node-scheduler.include-coordinator=true
+    http-server.http.port=8080
+    memory.heap-headroom-per-node=0.5GB
+    query.max-memory=1GB
+    query.max-memory-per-node=0.5GB
+    query.max-total-memory-per-node=2GB
+    discovery-server.enabled=true
+    discovery.uri=http://presto-coordinator:8080
+  pinot.properties: |
+    connector.name=pinot
+    pinot.controller-urls=pinot:9000
+    pinot.controller-rest-service=pinot:9000
+    
+  
+    
