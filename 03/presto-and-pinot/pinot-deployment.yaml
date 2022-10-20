@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: pinot
-          image: apachepinot/pinot:latest-arm64
+          image: apachepinot/pinot:latest
           command: ["/opt/pinot/bin/pinot-admin.sh"]
           args: ["QuickStart", "-type", "batch"]
           ports:
