@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rest-api-client
+  labels:
+    app: rest-api-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rest-api-client
+  template:
+    metadata:
+      labels:
+        app: rest-api-client
+    spec:
+      containers:
+      - name: rest-api-client
+        image:  rest-api-presto:latest
+        imagePullPolicy: Never
+        command: [ "sleep" ]
+        args: [ "infinity" ]
+        resources:
+          requests:
+            memory: "2Gi"
+          limits:
+            memory: "2Gi"
+        volumeMounts:
+          - name: scripts
+            mountPath: "/home/"
+            
+
+      volumes:
+        - name: scripts
+          hostPath:
+            # Change this path to the absolute path in your filesystem
+            path: "/absolute/path/to/Learning and Operating Presto/Code/04/rest-api-client/scripts"
+          

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: r-client
+  labels:
+    app: r-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: r-client
+  template:
+    metadata:
+      labels:
+        app: r-client
+    spec:
+      containers:
+      - name: r-client
+        image:  r-presto:latest
+        imagePullPolicy: Never
+        command: [ "sleep" ]
+        args: [ "infinity" ]
+        resources:
+          requests:
+            memory: "2Gi"
+          limits:
+            memory: "2Gi"
+        volumeMounts:
+          - name: scripts
+            mountPath: "/home/docker/"
+            
+
+      volumes:
+        - name: scripts
+          hostPath:
+            # Change this path to the absolute path in your filesystem
+            path: "/absolute/path/to/Learning and Operating Presto/Code/04/r-client/scripts"
+            
