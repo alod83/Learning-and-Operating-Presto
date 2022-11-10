@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-client
+  labels:
+    app: nodejs-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-client
+  template:
+    metadata:
+      labels:
+        app: nodejs-client
+    spec:
+      containers:
+      - name: nodejs-client
+        image:  nodejs-presto:latest
+        imagePullPolicy: Never
+        command: [ "sleep" ]
+        args: [ "infinity" ]
+        resources:
+          requests:
+            memory: "2Gi"
+          limits:
+            memory: "2Gi"
+        volumeMounts:
+          - name: scripts
+            mountPath: "/home/"
+            
+
+      volumes:
+        - name: scripts
+          hostPath:
+            # Change this path to the absolute path in your filesystem
+            path: "/Users/angelica/O'Reilly/Learning and Operating Presto/Code/04/nodejs-client/client"
+          
