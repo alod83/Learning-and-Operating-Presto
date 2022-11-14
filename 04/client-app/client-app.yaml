@@ -1,0 +1,46 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-service
+  labels:
+    app: client-service
+spec:
+  ports:
+    - port: 8501
+      protocol: TCP
+      targetPort: 8501
+  type: LoadBalancer
+  selector:
+    app: client-app
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-app
+  labels:
+    app: client-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-app
+  template:
+    metadata:
+      labels:
+        app: client-app
+    spec:
+      containers:
+      - name: client-app
+        image:  client-app:latest
+        ports:
+          - containerPort: 8501
+        imagePullPolicy: Never
+        
+        resources:
+          requests:
+            memory: "2Gi"
+          limits:
+            memory: "2Gi"
+            
