@@ -4,8 +4,10 @@ metadata:
   name: presto-coordinator
 spec:
   ports:
-    - name: client
-      port: 8080
+    - port: 9001
+      protocol: TCP
+      targetPort: 8080
+  type: LoadBalancer
   selector:
     app: presto-coordinator
 
