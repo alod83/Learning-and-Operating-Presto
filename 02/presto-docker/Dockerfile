@@ -26,6 +26,7 @@ RUN wget --quiet "${PRESTO_CLI_BIN}"
 RUN mv presto-cli-${PRESTO_VERSION}-executable.jar /usr/local/bin/presto
 RUN chmod +x /usr/local/bin/presto
 RUN mkdir /opt/presto/data
+RUN mkdir /opt/presto/log
 
 # Specify the entrypoint to start
 CMD ["/opt/presto/bin/launcher", "run"]
