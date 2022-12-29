@@ -22,10 +22,8 @@ data:
     query.max-total-memory-per-node=2GB
     discovery-server.enabled=true
     discovery.uri=http://presto-coordinator:8080
-  pinot.properties: |
-    connector.name=pinot
-    pinot.controller-urls=pinot:9000
-    pinot.controller-rest-service=pinot:9000
+  
+
     
   
     
