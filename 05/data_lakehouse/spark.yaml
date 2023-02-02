@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-master
+spec:
+  ports:
+    # master rpc
+    - name: rpc
+      port: 7077
+      targetPort: 7077
+      # master webui
+    - name : webui
+      port: 8080
+      targetPort: 8080
+    - name : rest-api
+      port: 6066
+      # master rest api submission
+      targetPort: 6066
+  type: LoadBalancer
+  selector:
+    app: spark-master
+
+
+
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: spark-master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: spark-master
+    spec:
+      containers:
+        - name: spark-master
+          image:  spark:latest
+          imagePullPolicy: Never
+          command: [ "sleep" ]
+          args: [ "infinity" ]
+          ports:
+            - containerPort: 8080
+            - containerPort: 7077
+            - containerPort: 6066
+          resources:
+            requests:
+              memory: "2Gi"
+            limits:
+              memory: "2Gi"
+          volumeMounts:
+          - name: scripts
+            mountPath: "/scripts/"
+            
+
+      volumes:
+        - name: scripts
+          hostPath:
+            # Change this path to the absolute path in your filesystem
+            path: "/Users/angelica/O'Reilly/Learning and Operating Presto/Git/Learning-and-Operating-Presto/05/data_lakehouse/scripts" # Specify a path to a local drive or volume on the Kubernetes worker node
+      
+         
