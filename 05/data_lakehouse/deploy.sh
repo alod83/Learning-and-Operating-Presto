@@ -17,7 +17,7 @@ function remove_cluster() {
     kubectl delete svc spark-master --namespace presto 
     kubectl delete rc,svc hive-metastore --namespace presto 
     kubectl delete deployment,svc mysql-metastore --namespace presto 
-    #kubectl delete rc,svc presto-coordinator --namespace presto 
+    kubectl delete rc,svc presto-coordinator --namespace presto 
     
 }
 
@@ -28,11 +28,7 @@ function deploy_cluster(){
     sleep 10
     kubectl apply -f spark.yaml --namespace presto 
     kubectl apply -f hive-metastore.yaml --namespace presto
-    #kubectl apply -f minio-mc.yaml --namespace presto 
-    sleep 10
-    kubectl apply -f mc.yaml --namespace presto 
-    
-    
+    kubectl apply -f presto-coordinator.yaml --namespace presto 
 }
 
 # selecting mode

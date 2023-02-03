@@ -19,8 +19,10 @@ df2.write.format("hudi").
     option(RECORDKEY_FIELD_OPT_KEY, "id").
     option(PRECOMBINE_FIELD_OPT_KEY, "dob").
     option(TABLE_NAME, tableName).
+    option(TABLE_TYPE, "COPY_ON_WRITE").
+    option(OPERATION, "upsert").
     mode(Overwrite).
-    saveAsTable("hudi_customers")
+    saveAsTable("hudi_customers2")
 
 spark.sql("select * from hudi_customers where first == \"Sharon\"").show
 

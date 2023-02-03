@@ -39,9 +39,9 @@ spec:
             - ${HIVE_HOME}/bin/schematool -initSchema -dbType mysql; ${HIVE_HOME}/bin/hive --service metastore
           resources:
             requests:
-              memory: "4Gi"
+              memory: "1Gi"
             limits:
-              memory: "4Gi"
+              memory: "1Gi"
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:

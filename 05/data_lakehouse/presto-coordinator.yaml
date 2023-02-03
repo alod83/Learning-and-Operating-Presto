@@ -27,41 +27,42 @@ spec:
     spec:
       containers:
         - name: presto-coordinator
-          image:  prestodb:latest
-          imagePullPolicy: Never
-          command:
-            - /bin/bash
-            - -c
-          args: 
-            - /opt/presto/bin/launcher run
+          image:  ahanaio/prestodb-sandbox:0.273.4
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: minio_root_user
+                  name: minio-secrets
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: minio_root_password
+                  name: minio-secrets
+
+          #command:
+          #  - /bin/bash
+          #  - -c
+          #args: 
+          #  - /opt/presto/bin/launcher run
           ports:
             - containerPort: 8080
-            - containerPort: 8889
+            - containerPort: 8887
           resources:
             requests:
-              memory: "4Gi"
+              memory: "9Gi"
             limits:
-              memory: "4Gi"
+              memory: "9Gi"
           volumeMounts:
-            - name: config
-              mountPath: "/opt/presto/etc/config.properties"
-              subPath: config.properties
+            - name: etc
+              mountPath: "opt/presto-server/etc"
               
-            - name: hive
-              mountPath: "/opt/presto/etc/catalog/hive.properties"
-              subPath: hive.properties
-          
+            
       volumes:
         # You set volumes at the Pod level, then mount them into containers inside that Pod
-        - name: config
-          configMap:
-            # Provide the name of the ConfigMap you want to mount.
-            name: presto-config
-            # An array of keys from the ConfigMap to create as files
-            items:
-            - key: "config-coordinator.properties"
-              path: "config.properties"
-        - name: hive
-          secret:
-            secretName: presto-hive-secrets
+        - name: etc
+          hostPath:
+            # Change this path to the absolute path in your filesystem
+            path: "/Users/angelica/O'Reilly/Learning and Operating Presto/Git/Learning-and-Operating-Presto/05/data_lakehouse/conf" # Specify a path to a local drive or volume on the Kubernetes worker node
+       
             
