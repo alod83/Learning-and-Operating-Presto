@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: presto-coordinator
+spec:
+  ports:
+    - port: 8443
+      protocol: TCP
+      targetPort: 8443
+  type: LoadBalancer
+  selector:
+    app: presto-coordinator
+
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: presto-coordinator
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: presto-coordinator
+    spec:
+      containers:
+        - name: presto-coordinator
+          #image:  ahanaio/prestodb-sandbox:0.273.4
+          image: prestodb:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8443
+            - containerPort: 8889
+          resources:
+            requests:
+              memory: "8Gi"
+            limits:
+              memory: "8Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/opt/presto/etc/config.properties"
+              subPath: config.properties
+              
+            - name: mysql
+              mountPath: "/opt/presto/etc/catalog/mysql.properties"
+              subPath: mysql.properties
+            
+            - name: certificate
+              mountPath: "/opt/presto/etc/presto-keystore.jks"
+
+            - name: password-authenticator
+              mountPath: "/opt/presto/etc/password-authenticator.properties"
+              subPath: password-authenticator.properties
+            
+            - name: password-db
+              mountPath: "/opt/presto/etc/password.db"
+
+            - name: access-control
+              mountPath: "/opt/presto/etc/access-control.properties"
+              subPath: access-control.properties
+              
+            - name: rules
+              mountPath: "/opt/presto/etc/rules.json"  
+          
+      volumes:
+        # You set volumes at the Pod level, then mount them into containers inside that Pod
+        - name: config
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: presto-config
+            # An array of keys from the ConfigMap to create as files
+            items:
+            - key: "config-coordinator.properties"
+              path: "config.properties"
+        - name: mysql
+          secret:
+            secretName: presto-mysql-secrets
+        - name: certificate
+          hostPath:
+            # Change this path to the absolute path in your filesystem
+            path: "/Users/angelica/O'Reilly/Learning and Operating Presto/Git/Learning-and-Operating-Presto/07/presto-authorization/certificates/presto-coordinator-keystore.jks" # Specify a path to a local drive or volume on the Kubernetes worker node
+        - name: password-authenticator
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: presto-config
+            # An array of keys from the ConfigMap to create as files
+            items:
+            - key: "password-authenticator.properties"
+              path: "password-authenticator.properties"
+        - name: password-db
+          hostPath:
+            # Change this path to the absolute path in your filesystem
+            path: "/Users/angelica/O'Reilly/Learning and Operating Presto/Git/Learning-and-Operating-Presto/07/presto-authorization/conf/password.db" # Specify a path to a local drive or volume on the Kubernetes worker node
+        - name: access-control
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: presto-config
+            # An array of keys from the ConfigMap to create as files
+            items:
+            - key: "access-control.properties"
+              path: "access-control.properties"
+        - name: rules
+          hostPath:
+            # Change this path to the absolute path in your filesystem
+            path: "/Users/angelica/O'Reilly/Learning and Operating Presto/Git/Learning-and-Operating-Presto/07/presto-authorization/conf/rules.json" # Specify a path to a local drive or volume on the Kubernetes worker node
+        
+            

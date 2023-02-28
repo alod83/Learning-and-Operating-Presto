@@ -1,0 +1,16 @@
+{
+    "catalogs": [
+        {
+            "user": "clientA",
+            "catalog": "tpch",
+            "allow": "read-only"
+        },
+
+        {
+            "user": "clientB",
+            "catalog": "mysql",
+            "allow": "read-only"
+        }
+    ]
+}
+
