@@ -11,7 +11,9 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/data"
+    # Set the path to the folder where you want to store data. 
+    # Use an absolute path.
+    path: "/path/to/your/data/storage/folder"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
