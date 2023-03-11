@@ -1,0 +1,36 @@
+# Extracted from https://github.com/apache/ranger/blob/master/build_ranger_using_docker.sh
+
+FROM amd64/centos:7
+RUN mkdir /tools
+WORKDIR /tools
+#Install default services
+#RUN yum clean all
+RUN yum install -y git
+RUN yum install -y gcc
+RUN yum install -y bzip2 fontconfig
+RUN yum install -y diffutils
+RUN yum install -y python3
+#RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
+ENV JAVA_HOME /etc/alternatives/jre
+ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk/
+ENV PATH $JAVA_HOME/bin:$PATH
+#Download and install JDK8 from AWS s3's docker-assets 
+#RUN wget https://s3.eu-central-1.amazonaws.com/docker-assets/dist/jdk-8u101-linux-x64.rpm
+#RUN rpm -i jdk-8u101-linux-x64.rpm
+#ENV JAVA_HOME /usr/java/latest
+#ENV  PATH $JAVA_HOME/bin:$PATH
+RUN curl -o  apache-maven-3.6.3-bin.tar.gz https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.6.3/apache-maven-3.6.3-bin.tar.gz 
+RUN tar xfz apache-maven-3.6.3-bin.tar.gz
+RUN ln -sf /tools/apache-maven-3.6.3 /tools/maven
+ENV  PATH /tools/maven/bin:$PATH
+ENV MAVEN_OPTS "-Xmx2048m -XX:MaxPermSize=512m"
+# Setup gosu for easier command execution
+RUN useradd -ms /bin/bash builder
+RUN usermod -g root builder
+RUN mkdir -p /scripts
+RUN echo "#!/bin/bash" > /scripts/mvn.sh
+RUN echo 'set -x; if [ "\$1" = "mvn" ]; then usermod -u \$(stat -c "%u" pom.xml) builder; gosu builder bash -c '"'"'ln -sf /.m2 \$HOME'"'"'; exec gosu builder "\$@"; fi; exec "\$@" ' >> /scripts/mvn.sh
+RUN chmod -R 777 /scripts
+RUN chmod -R 777 /tools
+ENTRYPOINT ["/scripts/mvn.sh"]
