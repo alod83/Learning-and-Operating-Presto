@@ -22,6 +22,7 @@ function remove_cluster() {
 }
 
 function deploy_cluster(){
+    kubectl create namespace presto
     kubectl create -f minio-secrets.yaml --namespace presto
     kubectl apply -f minio.yaml --namespace presto 
     kubectl apply -f mysql-metastore.yaml --namespace presto
