@@ -4,6 +4,8 @@
 
 This is the code repository for [Learning and Operating Presto](https://www.oreilly.com/library/view/learning-and-operating/9781098141844), published by O'Reilly Media.
 
+## Table of Contents
+
 1. Introduction to Presto 
 
 2. [Getting Started with Presto](02) 
@@ -20,4 +22,4 @@ This is the code repository for [Learning and Operating Presto](https://www.orei
 
 8. [Performance Tuning](08)
 
-9. [Operating Presto at Scale](09)
+9. Operating Presto at Scale
